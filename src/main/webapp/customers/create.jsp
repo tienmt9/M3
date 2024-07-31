@@ -11,6 +11,12 @@
     <title>Title</title>
 </head>
 <body>
-
+<form method="post">
+    <input type="text" name="id" placeholder="id">
+    <input type="text" name="name" placeholder="name">
+    <input type="text" name="email" placeholder="email">
+    <input type="text" name="address" placeholder="address">
+    <button type="submit">gửi</button>
+</form>
 </body>
 </html>

@@ -22,13 +22,14 @@ public class CustomerController extends HttpServlet {
         switch (action) {
             case "create":
                 createCustomer(req, resp);
-            default:
+            case "list":
                 showCustomers(req, resp);
         }
     }
 
-    private void createCustomer(HttpServletRequest req, HttpServletResponse resp) {
-
+    private void createCustomer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/customers/create.jsp");
+        dispatcher.forward(req, resp);
     }
 
     private static void showCustomers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -42,6 +43,15 @@ public class CustomerController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        String name = req.getParameter("name");
+        String email = req.getParameter("email");
+        String address = req.getParameter("address");
 
+        Customer customer = new Customer(id, name, email, address);
+        ICustomerService customerService = new CustomerService();
+
+        customerService.save(customer);
+        resp.sendRedirect("/customers?action=list");
     }
 }
