@@ -56,12 +56,39 @@ public class CustomerDAO implements ICustomerService {
 
     @Override
     public Customer findById(int id) {
+        Connection connection = getConnection();
+        String getCustomerById = "SELECT * FROM new_schema.new_table WHERE id =?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(getCustomerById);
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int customerId = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String address = resultSet.getString("address");
+                return new Customer(customerId, name, email, address);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
     @Override
     public void update(int id, Customer customer) {
-
+        Connection connection = getConnection();
+        String updateCustomer = "UPDATE new_schema.new_table SET name =?, email =?, address =? WHERE id =?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(updateCustomer);
+            preparedStatement.setString(1, customer.getName());
+            preparedStatement.setString(2, customer.getEmail());
+            preparedStatement.setString(3, customer.getAddress());
+            preparedStatement.setInt(4, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
