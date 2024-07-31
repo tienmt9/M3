@@ -1,6 +1,7 @@
 package com.example.customermanagement.controller;
 
 import com.example.customermanagement.model.Customer;
+import com.example.customermanagement.service.CustomerDAO;
 import com.example.customermanagement.service.CustomerService;
 import com.example.customermanagement.service.ICustomerService;
 
@@ -15,6 +16,8 @@ import java.util.List;
 
 @WebServlet(name = "customerController", urlPatterns = "/customers")
 public class CustomerController extends HttpServlet {
+    ICustomerService customerService = new CustomerDAO();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
@@ -32,8 +35,7 @@ public class CustomerController extends HttpServlet {
         dispatcher.forward(req, resp);
     }
 
-    private static void showCustomers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ICustomerService customerService = new CustomerService();
+    private void showCustomers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Customer> customers = customerService.findAll();
 
         req.setAttribute("customers", customers);
@@ -49,7 +51,6 @@ public class CustomerController extends HttpServlet {
         String address = req.getParameter("address");
 
         Customer customer = new Customer(id, name, email, address);
-        ICustomerService customerService = new CustomerService();
 
         customerService.save(customer);
         resp.sendRedirect("/customers?action=list");
